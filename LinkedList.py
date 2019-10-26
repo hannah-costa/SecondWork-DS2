@@ -35,21 +35,3 @@ class LinkedList(object):
 			self.group.remove(element)
 
 		return same
-
-
-class HashTable(object):
-	# TODO!!!
-	def __init__(self, arg):
-		super(Hash, self).__init__()
-		self.arg = arg
-		
-
-if __name__ == '__main__':
-	groupA = LinkedList()
-	groupA.readFile("fileA.txt")
-	groupB = LinkedList()
-	groupB.readFile("fileB.txt")
-
-	print(groupA.removeSame(groupB.group))
-	print(len(groupA.group))
-	# print(groupA.insertDifferent(groupB.group))
