@@ -91,8 +91,17 @@ class HashTable(object):
 		for element in group:
 			found = self._search(element)
 			if found is None:
-				print(element)
 				self._insert(self.hashTable, element)
 
 		return self.hashTable
 
+
+	def removeSame(self, group):
+		# Removes the elements of the group that are in the hashtable and in the group
+		# at the same time.
+
+		for element in group:
+			found = self._search(element)
+			if found is None:
+				group.remove(element)
+		
