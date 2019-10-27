@@ -84,6 +84,15 @@ class HashTable(object):
 
 		return self._indexer(self.length, element)
 
+	def searchSame(self, group):
+		same = []
+		for element in group:
+			found = self._search(element)
+			if found is not None:
+				same.append(element)
+
+		return same
+
 			
 	def insertDifferent(self, group):
 		# Inserts the elements that are in group A and not in the hashtable.
@@ -102,6 +111,5 @@ class HashTable(object):
 
 		for element in group:
 			found = self._search(element)
-			if found is None:
+			if found is not None:
 				group.remove(element)
-		

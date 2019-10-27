@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
 	groupB = HT.HashTable()
 	groupB.readFile("fileB.txt")
-	print(groupA.group)
-	groupB.removeSame(groupA.group)
-	print("--------------------------")
-	print(groupA.group)
+	# print(groupA.group)
+	print(groupB.searchSame(groupA.group))
+	# print("--------------------------")
+	# print(groupA.group)
