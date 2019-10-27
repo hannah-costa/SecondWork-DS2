@@ -34,7 +34,7 @@ class HashTable(object):
 
 
 
-	def _isFull(self):
+	def isFull(self):
 		# checks if the hashtable is full.
 		if None in self.hashTable:
 			return False
@@ -47,17 +47,18 @@ class HashTable(object):
 		for element in self.hashTable:
 			self._insert(newHashTable, element)
 
-		return newHashTable
+		self.hashTable = newHashTable
+		self.length = len(self.hashTable)
 
 
 	def _insert(self, hashTable, element):
 		# _insert function takes hashTable as a parameter because of _realloc().
-		if self._isFull():
-			hashTable = self._realloc()
+		if self.isFull():
+			self._realloc()
 
 		index = self._indexer(len(hashTable))
 		if index is not None:
-			hashTable[index] = element
+			hashTable.insert(index, element)
 
 
 	def readFile(self, filename):
@@ -87,7 +88,6 @@ class HashTable(object):
 	def insertDifferent(self, group):
 		# Inserts the elements that are in group A and not in the hashtable.
 
-		found = None
 		for element in group:
 			found = self._search(element)
 			if found is None:
