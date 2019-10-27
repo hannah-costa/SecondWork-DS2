@@ -12,3 +12,8 @@ if __name__ == '__main__':
 	# groupB.readFile("fileB.txt")
 
 	groupB = HT.HashTable()
+	groupB.readFile("fileB.txt")
+	print(groupB.hashTable)
+	groupB.insertDifferent(groupA.group)
+	print("--------------------------")
+	print(groupB.hashTable)
