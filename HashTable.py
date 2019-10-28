@@ -3,13 +3,7 @@ class HashTable(object):
 	def __init__(self):
 		self.hashTable = []
 		self.length = 0
-
-	def setLength(self, newLength):
-		self.length = newLength
-
-
-	def getLength(self):
-		return self.length
+		
 
 	def _indexer(self, length, element = None):
 		# returns the index of a certain element. If no element parameter is received,

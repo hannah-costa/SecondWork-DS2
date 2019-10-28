@@ -1,1 +1,1 @@
-print(hash(None))
+print(None)
