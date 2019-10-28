@@ -1,13 +1,15 @@
 class HashTable(object):
-	# TODO: setLength and getLength
+
 	def __init__(self):
 		self.hashTable = []
 		self.length = 0
 		
 
 	def _indexer(self, length, element = None):
-		# returns the index of a certain element. If no element parameter is received,
+
+		# Returns the index of a certain element. If no element parameter is received,
 		# returns the index of the next free position for element.
+
 		index = hash(element) % length
 		if index < 0:
 			index *= -1
@@ -21,7 +23,7 @@ class HashTable(object):
 				index = (index + i**2) % length
 				i += 1
 				
-			if i > length: # could not find a valid index
+			if i > length: # Could not find a valid index.
 				return None
 
 			return index
@@ -29,14 +31,18 @@ class HashTable(object):
 
 
 	def isFull(self):
-		# checks if the hashtable is full.
+
+		# Checks if the hashtable is full.
+
 		if None in self.hashTable:
 			return False
 		return True
 
 
 	def _realloc(self):
-		# reallocates 50% more space for the hashtable.
+
+		# Reallocates 50% more space for the hashtable.
+
 		newHashTable = [None] * int(self.length * 1.5)
 		for element in self.hashTable:
 			self._insert(newHashTable, element)
@@ -46,7 +52,10 @@ class HashTable(object):
 
 
 	def _insert(self, hashTable, element):
-		# _insert function takes hashTable as a parameter because of _realloc().
+
+		# _insert function has to be generic and takes hashTable as a 
+		# parameter because of _realloc().
+
 		if self.isFull():
 			self._realloc()
 
@@ -56,11 +65,12 @@ class HashTable(object):
 
 
 	def readFile(self, filename):
-		# reads the file into an auxiliar list and converts it into a hashtable.
+
+		# Reads the file into an auxiliar list and converts it into a hashtable.
 
 		elements = []
 		for line in open(filename):
-			elements.append(line[:-1])
+			elements.append(int(line[:-1])) # Change this line according to the type in the file.
 
 
 		self.length = len(elements)
@@ -73,12 +83,16 @@ class HashTable(object):
 
 
 	def _search(self, element):
-		# returns the index of the element searched if found.
-		# returns None otherwise.
+
+		# Returns the index of the element searched if found.
+		# Returns None otherwise.
 
 		return self._indexer(self.length, element)
 
 	def searchSame(self, group):
+
+		# Searches for elements that are both in the list and in the hashtable.
+
 		same = []
 		for element in group:
 			found = self._search(element)
@@ -89,18 +103,18 @@ class HashTable(object):
 
 			
 	def insertDifferent(self, group):
-		# Inserts the elements that are in group A and not in the hashtable.
+
+		# Inserts the elements that are in the list and not in the hashtable.
 
 		for element in group:
 			found = self._search(element)
 			if found is None:
 				self._insert(self.hashTable, element)
 
-		return self.hashTable
-
 
 	def removeSame(self, group):
-		# Removes the elements of the group that are in the hashtable and in the group
+
+		# Removes the elements of the list that are in the hashtable and in the list
 		# at the same time.
 
 		for element in group:
