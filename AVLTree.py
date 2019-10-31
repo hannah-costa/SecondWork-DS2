@@ -11,33 +11,124 @@ class AVLTree(object):
 		self.root = None
 
 
-	def calculateBF(self):
-		
+	def printBF(self):
+		BF = self.calculateBF(self.root)
+		print(BF)
+
+
+	def calculateHeight(self, node):
+
+		# recursively calculates the height of the tree using this formula:
+		# Height = 1 + max(Height(left) + Height(right))
+		# Where Height(left/right) is the height of the left/right subtree.
+		if node is None:
+			return -1
+
+		lHeight = self.calculateHeight(node.left)
+		rHeight = self.calculateHeight(node.right)
+
+		return 1 + max(lHeight, rHeight)
+
+	def updateBF(self, node):
+
+		# updates the balance factor (BF) of every element in the tree using
+		# this formula:
+		# BF = Height(left) - Height(right)
+
+		lHeight = self.calculateHeight(self.root.left)
+		rHeight = self.calculateHeight(self.root.right)
+
+		node.balance = rHeight - lHeight
+
+
+	def leftRotation(self, node):
+		# rotates the tree to the left. The node to the right goes to the place
+		# where the received node was.
+
+		rNode = node.right
+		node.right = rNode.left
+		rNode.left = node
+
+		if node == self.root:
+			self.root = rNode
+
+		return rNode
+
+
+	def rightRotation(self, node):
+		# rotates the tree to the right. The node to the left goes to the place
+		# where the received node was.
+
+		lNode = node.left
+		node.left = lNode.right
+		lNode.right = node
+
+		if node == self.root:
+			self.root = lNode
+
+		return lNode
+
+
+	def leftRightRotation(self, node):
+
+		# a.k.a. double right rotation
+		# consists of a right rotation then a left rotation.
+
+		node.left = self.leftRotation(node.left)
+		return self.rightRotation(node)
+
+
+	def rightLeftRotation(self, node):
+
+		# a.k.a. double left rotation
+		# consists of a left rotation then a right rotation.
+
+		node.right = self.rightRotation(node)
+		return self.leftRotation(node)
 
 
 	def balance(self, node):
-		# TODO!!!
+
+		# checks if any rotations are needed.
+		# TODO: fix this!!!
+
+		if node.balance > 1:
+			if node.right.balance < -1:
+				print("rotating right then left")
+				return self.rightLeftRotation(node)
+
+			else:
+				print("rotating left")
+				return self.leftRotation(node)
+
+		elif node.balance < -1:
+			if node.left.balance > 1:
+				print("rotating left then right")
+				return self.leftRightRotation(node)
+
+			else:
+				print("rotating right")
+				return self.rightRotation(node)
+
+		return node
 
 
-	def leftRotation(self):
+	def _compare(self, newData, oldData):
 
+		# Comparison method made for integers.
+		# Change this method depending on the type you're dealing with.
 
-
-	def rightRotation(self):
-
-
-
-	def leftRightRotation(self):
-
-
-
-	def rightLeftRotation(self):
-
-
+		if newData > oldData:
+			return 1
+		elif newData < oldData:
+			return -1
+		else:
+			return 0
 
 
 	def insert(self, data):
 		self.root = self._insert(data, self.root)
+		self.updateBF(self.root)
 
 
 	def _insert(self, data, node):
@@ -54,5 +145,17 @@ class AVLTree(object):
 			else:
 				node.right = self._insert(data, node.right)
 
+		node = self.balance(node)
 		return node
 		
+
+	def printTree(self):
+		self._printTree(self.root)
+
+
+	# recursive print
+	def _printTree(self, node):	
+		if node is not None:
+			print(node.data)
+			self._printTree(node.left)
+			self._printTree(node.right)
