@@ -89,6 +89,8 @@ class AVLTree(object):
 
 		print("rotating right then left...")
 		node.right = self.rotateRight(node.right)
+		self.printTree()
+		print("----------------------")
 		return self.rotateLeft(node)
 
 
@@ -102,23 +104,24 @@ class AVLTree(object):
 			node.balance = self.updateBF(node)
 
 			if node.balance > 1: # if the BF of the node is positive and...
-				# ...the right son is negative, double rotate left (rotate right, then left).
+				# ...the right child is negative, double rotate left (rotate right, then left).
 				if node.right.balance <= 0:
 					node = self.rotateRightLeft(node)
 
-				# ...the left son is positive, rotate left.
+				# ...the left child is positive, rotate left.
 				elif node.left.balance > 0:
 					node = self.rotateLeft(node)
 					
 
 			elif node.balance < -1: # if the BF of the node is negative and...
-				# ...the left son is positive, double rotate right (rotate left, then right).
+				# ...the left child is positive, double rotate right (rotate left, then right).
 				if node.left.balance >= 0:
 					node = self.rotateLeftRight(node)
 
-				# ...the right son is negative, rotate right.
+				# ...the right child is negative, rotate right.
 				elif node.right.balance < 0:
 					node = self.rotateRight(node)
+
 
 
 	def _compare(self, newData, oldData):
@@ -137,7 +140,6 @@ class AVLTree(object):
 	def insert(self, data):
 		self.root = self._insert(data, self.root)
 		self.rebalance(self.root)
-
 		
 
 	def _insert(self, data, node):
