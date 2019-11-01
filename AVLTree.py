@@ -104,21 +104,21 @@ class AVLTree(object):
 			if node.balance > 1: # if the BF of the node is positive and...
 				# ...the right son is negative, double rotate left (rotate right, then left).
 				if node.right.balance <= 0:
-					return self.rotateRightLeft(node)
+					node = self.rotateRightLeft(node)
 
 				# ...the left son is positive, rotate left.
 				elif node.left.balance > 0:
-					return self.rotateLeft(node)
+					node = self.rotateLeft(node)
 					
 
 			elif node.balance < -1: # if the BF of the node is negative and...
 				# ...the left son is positive, double rotate right (rotate left, then right).
 				if node.left.balance >= 0:
-					return self.rotateLeftRight(node)
+					node = self.rotateLeftRight(node)
 
 				# ...the right son is negative, rotate right.
 				elif node.right.balance < 0:
-					return self.rotateRight(node)
+					node = self.rotateRight(node)
 
 
 	def _compare(self, newData, oldData):
