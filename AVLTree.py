@@ -45,6 +45,7 @@ class AVLTree(object):
 		# rotates the tree to the left. The node to the right goes to the place
 		# where the received node was.
 
+		print("rotating left...")
 		rNode = node.right
 		node.right = rNode.left
 		rNode.left = node
@@ -52,13 +53,14 @@ class AVLTree(object):
 		if node == self.root:
 			self.root = rNode
 
-		# return rNode
+		return rNode
 
 
 	def rotateRight(self, node):
 		# rotates the tree to the right. The node to the left goes to the place
 		# where the received node was.
 
+		print("rotating right...")
 		lNode = node.left
 		node.left = lNode.right
 		lNode.right = node
@@ -66,7 +68,7 @@ class AVLTree(object):
 		if node == self.root:
 			self.root = lNode
 
-		# return lNode
+		return lNode
 
 
 	def rotateLeftRight(self, node):
@@ -74,42 +76,49 @@ class AVLTree(object):
 		# a.k.a. double right rotation
 		# consists of a left rotation then a right rotation.
 
+		print("rotating left then right...")
 		node.left = self.rotateLeft(node.left)
 		return self.rotateRight(node)
 
 
 	def rotateRightLeft(self, node):
 
+		# TODO: CHECK THIS
 		# a.k.a. double left rotation
 		# consists of a right rotation then a left rotation.
 
-		node.right = self.rotateRight(node)
+		print("rotating right then left...")
+		node.right = self.rotateRight(node.right)
 		return self.rotateLeft(node)
 
 
 	def rebalance(self, node):
 
 		# rebalances the tree with rotations.
-		# TODO: fix this!!!
+		# TODO: test this!!!
 		if node is not None:
 			self.rebalance(node.left)
 			self.rebalance(node.right)
 			node.balance = self.calculateBF(node)
 
-			if node.balance > 1:
-				if node.right.balance < -1:
-					
-				elif node:
+			if node.balance > 1: # if the BF of the node is positive and...
+				# ...the right son is negative, double rotate left (rotate right, then left).
+				if node.right.balance <= 0:
+					node = self.rotateRightLeft(node)
+
+				# ...the left son is positive, rotate left.
+				elif node.left.balance > 0:
+					node = self.rotateLeft(node)
 					
 
 			elif node.balance < -1: # if the BF of the node is negative and...
 				# ...the left son is positive, double rotate right (rotate left, then right).
 				if node.left.balance >= 0:
-					self.rotateLeftRight(node)
+					node = self.rotateLeftRight(node)
 
-				# ...the son is negative, rotate right.
+				# ...the right son is negative, rotate right.
 				elif node.right.balance < 0:
-					
+					node = self.rotateRight(node)
 
 
 	def _compare(self, newData, oldData):
