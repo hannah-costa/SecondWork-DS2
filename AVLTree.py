@@ -99,7 +99,7 @@ class AVLTree(object):
 		if node is not None:
 			self.rebalance(node.left)
 			self.rebalance(node.right)
-			node.balance = self.calculateBF(node)
+			node.balance = self.updateBF(node)
 
 			if node.balance > 1: # if the BF of the node is positive and...
 				# ...the right son is negative, double rotate left (rotate right, then left).
