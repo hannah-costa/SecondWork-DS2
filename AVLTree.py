@@ -38,7 +38,7 @@ class AVLTree(object):
 		lHeight = self.calculateHeight(node.left)
 		rHeight = self.calculateHeight(node.right)
 
-		node.balance = rHeight - lHeight
+		return rHeight - lHeight
 
 
 	def rotateLeft(self, node):
@@ -104,21 +104,21 @@ class AVLTree(object):
 			if node.balance > 1: # if the BF of the node is positive and...
 				# ...the right son is negative, double rotate left (rotate right, then left).
 				if node.right.balance <= 0:
-					node = self.rotateRightLeft(node)
+					return self.rotateRightLeft(node)
 
 				# ...the left son is positive, rotate left.
 				elif node.left.balance > 0:
-					node = self.rotateLeft(node)
+					return self.rotateLeft(node)
 					
 
 			elif node.balance < -1: # if the BF of the node is negative and...
 				# ...the left son is positive, double rotate right (rotate left, then right).
 				if node.left.balance >= 0:
-					node = self.rotateLeftRight(node)
+					return self.rotateLeftRight(node)
 
 				# ...the right son is negative, rotate right.
 				elif node.right.balance < 0:
-					node = self.rotateRight(node)
+					return self.rotateRight(node)
 
 
 	def _compare(self, newData, oldData):
@@ -136,8 +136,9 @@ class AVLTree(object):
 
 	def insert(self, data):
 		self.root = self._insert(data, self.root)
-		
+		self.rebalance(self.root)
 
+		
 
 	def _insert(self, data, node):
 
@@ -153,7 +154,6 @@ class AVLTree(object):
 			else:
 				node.right = self._insert(data, node.right)
 
-		self.updateBF(node)
 		return node
 		
 
