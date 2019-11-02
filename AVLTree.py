@@ -11,16 +11,11 @@ class AVLTree(object):
 		self.root = None
 
 
-	def printBF(self):
-		BF = self.calculateBF(self.root)
-		print(BF)
-
-
 	def calculateHeight(self, node):
-
 		# recursively calculates the height of the tree using this formula:
 		# Height = 1 + max(Height(left) + Height(right))
 		# Where Height(left/right) is the height of the left/right subtree.
+
 		if node is None:
 			return -1
 
@@ -29,29 +24,26 @@ class AVLTree(object):
 
 		return 1 + max(lHeight, rHeight)
 
-	def updateBF(self, node):
 
+	def updateBF(self, node):
 		# updates the balance factor (BF) of every element in the tree using
 		# this formula:
 		# BF = Height(left) - Height(right)
 
 		lHeight = self.calculateHeight(node.left)
 		rHeight = self.calculateHeight(node.right)
-
 		return rHeight - lHeight
 
 
 	def rotateLeft(self, node):
 		# rotates the tree to the left. The node to the right goes to the place
 		# where the received node was.
-
-		print("rotating left...")
+		
 		rNode = node.right
-		node.right = rNode.left
-		rNode.left = node
+		T = rNode.left
 
-		if node == self.root:
-			self.root = rNode
+		rNode.left = node
+		node.right = T
 
 		return rNode
 
@@ -60,23 +52,19 @@ class AVLTree(object):
 		# rotates the tree to the right. The node to the left goes to the place
 		# where the received node was.
 
-		print("rotating right...")
 		lNode = node.left
-		node.left = lNode.right
-		lNode.right = node
+		T = lNode.right
 
-		if node == self.root:
-			self.root = lNode
+		lNode.right = node
+		node.left = T
 
 		return lNode
 
 
 	def rotateLeftRight(self, node):
-
 		# a.k.a. double right rotation
 		# consists of a left rotation then a right rotation.
 
-		print("rotating left then right...")
 		node.left = self.rotateLeft(node.left)
 		return self.rotateRight(node)
 
@@ -87,26 +75,23 @@ class AVLTree(object):
 		# a.k.a. double left rotation
 		# consists of a right rotation then a left rotation.
 
-		print("rotating right then left...")
 		node.right = self.rotateRight(node.right)
-		self.printTree()
-		print("----------------------")
 		return self.rotateLeft(node)
 
 
 	def rebalance(self, node):
-
 		# rebalances the tree with rotations.
 		# TODO: test this!!!
 		if node is not None:
-			self.rebalance(node.left)
-			self.rebalance(node.right)
+			node.left = self.rebalance(node.left)
+			node.right = self.rebalance(node.right)
 			node.balance = self.updateBF(node)
 
 			if node.balance > 1: # if the BF of the node is positive and...
 				# ...the right child is negative, double rotate left (rotate right, then left).
 				if node.right.balance <= 0:
 					node = self.rotateRightLeft(node)
+
 
 				# ...the left child is positive, rotate left.
 				elif node.left.balance > 0:
@@ -121,7 +106,13 @@ class AVLTree(object):
 				# ...the right child is negative, rotate right.
 				elif node.right.balance < 0:
 					node = self.rotateRight(node)
+		return node
 
+
+	def readFile(self, filename):
+
+		for line in open(filename):
+			self.insert(int(line))
 
 
 	def _compare(self, newData, oldData):
@@ -139,13 +130,13 @@ class AVLTree(object):
 
 	def insert(self, data):
 		self.root = self._insert(data, self.root)
+
 		self.rebalance(self.root)
 		
 
 	def _insert(self, data, node):
 
 		# Recursive insertion.
-		# TODO: after inserting, balance the tree
 
 		if node is None:
 			node = Node(data)
@@ -163,8 +154,10 @@ class AVLTree(object):
 		self._printTree(self.root)
 
 
-	# recursive print
 	def _printTree(self, node):	
+
+		# recursive print of the tree in pre order
+
 		if node is not None:
 			print(node.data)
 			self._printTree(node.left)
