@@ -12,6 +12,7 @@ class AVLTree(object):
 
 
 	def calculateHeight(self, node):
+
 		# recursively calculates the height of the tree using this formula:
 		# Height = 1 + max(Height(left) + Height(right))
 		# Where Height(left/right) is the height of the left/right subtree.
@@ -26,6 +27,7 @@ class AVLTree(object):
 
 
 	def updateBF(self, node):
+
 		# updates the balance factor (BF) of every element in the tree using
 		# this formula:
 		# BF = Height(left) - Height(right)
@@ -36,32 +38,31 @@ class AVLTree(object):
 
 
 	def rotateLeft(self, node):
+
 		# rotates the tree to the left. The node to the right goes to the place
 		# where the received node was.
 		
 		rNode = node.right
-		T = rNode.left
-
+		node.right = rNode.left
 		rNode.left = node
-		node.right = T
 
 		return rNode
 
 
 	def rotateRight(self, node):
+
 		# rotates the tree to the right. The node to the left goes to the place
 		# where the received node was.
 
 		lNode = node.left
-		T = lNode.right
-
+		node.left = lNode.right
 		lNode.right = node
-		node.left = T
 
 		return lNode
 
 
 	def rotateLeftRight(self, node):
+
 		# a.k.a. double right rotation
 		# consists of a left rotation then a right rotation.
 
@@ -71,7 +72,6 @@ class AVLTree(object):
 
 	def rotateRightLeft(self, node):
 
-		# TODO: CHECK THIS
 		# a.k.a. double left rotation
 		# consists of a right rotation then a left rotation.
 
@@ -80,38 +80,42 @@ class AVLTree(object):
 
 
 	def rebalance(self, node):
-		# rebalances the tree with rotations.
-		# TODO: test this!!!
+
+		# Recursively rebalances the tree with rotations.
+
 		if node is not None:
 			node.left = self.rebalance(node.left)
 			node.right = self.rebalance(node.right)
 			node.balance = self.updateBF(node)
 
 			if node.balance > 1: # if the BF of the node is positive and...
-				# ...the right child is negative, double rotate left (rotate right, then left).
-				if node.right.balance <= 0:
-					node = self.rotateRightLeft(node)
-
-
-				# ...the left child is positive, rotate left.
-				elif node.left.balance > 0:
+				# ...the right child is positive, rotate left.
+				if node.right.balance >= 0:
 					node = self.rotateLeft(node)
+
+
+				# ...the left child is negative, rotate right, then left.
+				elif node.right.balance < 0:
+					node = self.rotateRightLeft(node)
 					
 
 			elif node.balance < -1: # if the BF of the node is negative and...
-				# ...the left child is positive, double rotate right (rotate left, then right).
+				# ...the left child is positive, rotate left, then right.
 				if node.left.balance >= 0:
 					node = self.rotateLeftRight(node)
 
-				# ...the right child is negative, rotate right.
-				elif node.right.balance < 0:
+				# ...the left child is negative, rotate right.
+				elif node.left.balance < 0:
 					node = self.rotateRight(node)
+		
 		return node
 
 
 	def readFile(self, filename):
 
-		for line in open(filename):
+		# Reads the file into the AVL tree.
+
+		for line in open(filename, "r"):
 			self.insert(int(line))
 
 
@@ -129,6 +133,9 @@ class AVLTree(object):
 
 
 	def insert(self, data):
+
+		# Inserts an element into the AVL tree and then rebalances the tree if needed.
+
 		self.root = self._insert(data, self.root)
 
 		self.rebalance(self.root)
@@ -148,7 +155,64 @@ class AVLTree(object):
 				node.right = self._insert(data, node.right)
 
 		return node
-		
+
+
+	def search(self, data):
+		return self._search(data, self.root)
+
+	
+	def _search(self, data, node):
+
+		# Recursive search.
+		# Returns the data of the node if it has been found, returns None otherwise.
+
+		if node is not None:
+			stat = self._compare(data, node.data)
+			if stat == 0:
+				return node.data
+			elif stat < 0:
+				return self._search(data, node.left)
+			else:
+				return self._search(data, node.right)
+
+		return None
+
+
+	def searchSame(self, group):
+
+		# Searches for elements that are both in the list and in the AVL tree.
+
+		same = []
+		for element in group:
+			if self.search(element) is not None:
+				same.append(element)
+
+		return same
+
+
+	def insertDifferent(self, group):
+
+		# Inserts the elements that are in the list and not in the AVL tree.
+
+		different = []
+		for element in group:
+			if self.search(element) is None:
+				different.append(element)
+
+		for element in different:
+			self.insert(element)
+
+
+	def removeSame(self, group):
+
+		# Removes the elements of the list that are in the AVL tree and in the list
+		# at the same time.
+
+		same = self.searchSame(group)
+
+		for element in same:
+			group.remove(element)
+
 
 	def printTree(self):
 		self._printTree(self.root)
@@ -156,7 +220,7 @@ class AVLTree(object):
 
 	def _printTree(self, node):	
 
-		# recursive print of the tree in pre order
+		# Recursive print of the tree in pre order.
 
 		if node is not None:
 			print(node.data)

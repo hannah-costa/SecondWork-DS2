@@ -69,7 +69,7 @@ class HashTable(object):
 		# Reads the file into an auxiliar list and converts it into a hashtable.
 
 		elements = []
-		for line in open(filename):
+		for line in open(filename, "r"):
 			elements.append(int(line[:-1])) # Change this line according to the type in the file.
 
 
@@ -117,7 +117,6 @@ class HashTable(object):
 		# Removes the elements of the list that are in the hashtable and in the list
 		# at the same time.
 
-		for element in group:
-			found = self._search(element)
-			if found is not None:
-				group.remove(element)
+		same = self.searchSame(group)
+		for element in same:
+			group.remove(element)

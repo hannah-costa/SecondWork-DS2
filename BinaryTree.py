@@ -47,7 +47,7 @@ class BinaryTree(object):
 
 		# Reads the file into a binary tree.
 
-		for line in open(filename):
+		for line in open(filename, "r"):
 			self.insert(int(line)) # Change this line according to the type in the file.
 
 
@@ -106,9 +106,10 @@ class BinaryTree(object):
 		# Removes the elements of the list that are in the binary tree and in the list
 		# at the same time.
 
-		for element in group:
-			if self.search(element) is not None:
-				group.remove(element)
+		same = self.searchSame(group)
+
+		for element in same:
+			group.remove(element)
 
 
 	def printTree(self):

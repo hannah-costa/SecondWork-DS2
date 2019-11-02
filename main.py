@@ -7,7 +7,12 @@ import RBTree as RB
 if __name__ == '__main__':
 	groupA = LL.LinkedList()
 	groupA.readFile("fileA.txt")
+	print("group A: ", groupA.group)
 
-	groupB = AVL.AVLTree()
+	groupB = HT.HashTable()
 	groupB.readFile("fileB.txt")
-	groupB.printTree()
+	print("groupB: ", groupB.hashTable)
+	# groupB.printTree()
+	# print(groupB.searchSame(groupA.group))
+	groupB.removeSame(groupA.group)
+	print("new groupA: ", groupA.group)
