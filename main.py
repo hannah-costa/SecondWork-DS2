@@ -3,29 +3,51 @@ import HashTable as HT
 import BinaryTree as BT
 import AVLTree as AVL
 import RBTree as RB
+import time
 
 def readFile(filename):
 	with open(filename, "r") as file:
 		string = file.read()
 
-	elements = [int(x) for x in string[1:-2].split(", ") ]
+	elements = [int(x) for x in string[1:-1].split(", ") ]
 	return elements
 
 if __name__ == '__main__':
-	# groupA = LL.LinkedList()
-	# groupA.insertMultipleElements( readFile("fileA.txt") )
-	# print(groupA.group)
+	print("reading files...")
+	groupA = LL.LinkedList()
+	groupA.insertMultipleElements( readFile("file1000.txt") )
 
-	# groupB = BT.BinaryTree()
-	# groupB.insertMultipleElements(readFile("fileB.txt"))
-	# groupB.removeSame(groupA.group)
-	# print(groupA.group)
-
-	groupB = AVL.AVLTree()
-	groupB.insertMultipleElements(readFile("fileA.txt"))
-	groupB.printTree()
+	# groupB = LL.LinkedList()
+	# groupB.insertMultipleElements(readFile("file500000.txt"))
 
 	# groupB = HT.HashTable()
-	# groupB.readFile("fileB.txt")
-	# groupB.removeSame(groupA.group)
-	# print(groupA.group)
+	# groupB.insertMultipleElements(readFile("file50000.txt"))
+
+	groupB = BT.BinaryTree()
+	groupB.insertMultipleElements(readFile("file5000.txt"))
+
+	# groupB = AVL.AVLTree()
+	# groupB.insertMultipleElements(readFile("file5000.txt"))
+
+	start = time.time()
+	print("doing first operation...")
+	groupB.searchSame(groupA.group)
+	end = time.time()
+	print("elapsed time for op1: ", end-start)
+
+	start = time.time()
+	print("doing second operation...")
+	groupB.insertDifferent(groupA.group)
+	end = time.time()
+	print("elapsed time for op2: ", end-start)
+
+
+	start = time.time()
+	print("doing third operation...")
+	groupB.removeSame(groupA.group)
+	end = time.time()
+	print("elapsed time for op3: ", end-start)
+
+
+	print("GROUP A - attributions: ", groupA.attributions, "; comparisons: ", groupA.comparisons)
+	print("GROUP B - attributions: ", groupB.attributions, "; comparisons: ", groupB.comparisons)

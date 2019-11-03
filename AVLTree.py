@@ -3,10 +3,7 @@ class Node(object):
 		self.data = data
 		self.left = None
 		self.right = None
-		self.balance = 0 # balance factor of the node
-
-	def setBalance(self, balance):
-		self.balance = balance
+		self.height = 1
 
 		
 class AVLTree(object):
@@ -15,33 +12,46 @@ class AVLTree(object):
 		pass
 
 
-	def calculateHeight(self, node):
-
-		# recursively calculates the height of the tree using this formula:
-		# Height = 1 + max(Height(left) + Height(right))
-		# Where Height(left/right) is the height of the left/right subtree.
-
+	def getHeight(self, node):
 		if node is None:
-			return -1
+			return 0
 
-		lHeight = self.calculateHeight(node.left)
-		rHeight = self.calculateHeight(node.right)
-
-		return 1 + max(lHeight, rHeight)
+		return node.height
 
 
-	def updateBF(self, node):
+	def getBalance(self, node):
+		if node is None:
+			return 0
 
-		# updates the balance factor (BF) of every element in the tree using
-		# this formula:
-		# BF = Height(left) - Height(right)
-		if node is not None:
-			lHeight = self.calculateHeight(node.left)
-			rHeight = self.calculateHeight(node.right)
-			node.balance = rHeight - lHeight
+		return self.getHeight(node.right) - self.getHeight(node.left)
 
-			self.updateBF(node.left)
-			self.updateBF(node.right)
+	# def calculateHeight(self, node):
+
+	# 	# recursively calculates the height of the tree using this formula:
+	# 	# Height = 1 + max(Height(left) + Height(right))
+	# 	# Where Height(left/right) is the height of the left/right subtree.
+
+	# 	if node is None:
+	# 		return -1
+
+	# 	lHeight = self.calculateHeight(node.left)
+	# 	rHeight = self.calculateHeight(node.right)
+
+	# 	return 1 + max(lHeight, rHeight)
+
+
+	# def updateBF(self, node):
+
+	# 	# updates the balance factor (BF) of every element in the tree using
+	# 	# this formula:
+	# 	# BF = Height(left) - Height(right)
+	# 	if node is not None:
+	# 		lHeight = self.calculateHeight(node.left)
+	# 		rHeight = self.calculateHeight(node.right)
+	# 		node.balance = rHeight - lHeight
+
+	# 		self.updateBF(node.left)
+	# 		self.updateBF(node.right)
 
 
 	def rotateLeft(self, node):
@@ -52,6 +62,10 @@ class AVLTree(object):
 		rNode = node.right
 		node.right = rNode.left
 		rNode.left = node
+
+		# update height of the nodes
+		node.height = 1 + max(self.getHeight(node.left), self.getHeight(node.right))
+		rNode.height = 1 + max(self.getHeight(rNode.left), self.getHeight(rNode.right))
 
 		return rNode
 
@@ -64,6 +78,10 @@ class AVLTree(object):
 		lNode = node.left
 		node.left = lNode.right
 		lNode.right = node
+
+		# update height of the nodes
+		node.height = 1 + max(self.getHeight(node.left), self.getHeight(node.right))
+		lNode.height = 1 + max(self.getHeight(lNode.left), self.getHeight(lNode.right))
 
 		return lNode
 
@@ -93,17 +111,20 @@ class AVLTree(object):
 		if node is not None:
 			node.left = self.rebalance(node.left)
 			node.right = self.rebalance(node.right)
+			balance = self.getBalance(node)
+			balanceL = self.getBalance(node.left)
+			balanceR = self.getBalance(node.right)
 
-			if node.balance > 1: # if the BF of the node is positive and...
-				if node.right.balance >= 0: # ...right child is positive, rotate left.
+			if balance > 1: # if the BF of the node is positive and...
+				if balanceR >= 0: # ...right child is positive, rotate left.
 					node = self.rotateLeft(node)
-				elif node.right.balance < 0: # ...left child is negative, rotate right, then left.
+				elif balanceR < 0: # ...left child is negative, rotate right, then left.
 					node = self.rotateRightLeft(node)
 					
-			elif node.balance < -1: # if the BF of the node is negative and...
-				if node.left.balance >= 0: # ...left child is positive, rotate left, then right.
+			elif balance < -1: # if the BF of the node is negative and...
+				if balanceL >= 0: # ...left child is positive, rotate left, then right.
 					node = self.rotateLeftRight(node)
-				elif node.left.balance < 0: # ...left child is negative, rotate right.
+				elif balanceL < 0: # ...left child is negative, rotate right.
 					node = self.rotateRight(node)
 		
 		return node
@@ -136,8 +157,8 @@ class AVLTree(object):
 		# Inserts an element into the AVL tree and then rebalances the tree if needed.
 
 		self.root = self._insert(data, self.root)
-		self.updateBF(self.root)
-		self.rebalance(self.root)
+		# self.updateBF(self.root)
+		self.root = self.rebalance(self.root)
 		
 
 	def _insert(self, data, node):
@@ -145,7 +166,7 @@ class AVLTree(object):
 		# Recursive insertion.
 
 		if node is None:
-			node = Node(data)
+			return Node(data)
 		else:
 			stat = self._compare(data, node.data)
 			if stat < 0:
@@ -153,12 +174,13 @@ class AVLTree(object):
 			else:
 				node.right = self._insert(data, node.right)
 
+		node.height = 1 + max(self.getHeight(node.left), self.getHeight(node.right))
+
 		return node
 
 
 	def search(self, data):
 		return self._search(data, self.root)
-		pass
 
 	
 	def _search(self, data, node):
@@ -216,7 +238,6 @@ class AVLTree(object):
 
 	def printTree(self):
 		self._printTree(self.root)
-		pass
 
 
 	def _printTree(self, node):	
@@ -224,6 +245,6 @@ class AVLTree(object):
 		# Recursive print of the tree in pre order.
 
 		if node is not None:
-			print(str(node.data) + ' ' + str(node.balance))
+			print(str(node.data) + ' ' + str(self.getBalance(node)))
 			self._printTree(node.left)
 			self._printTree(node.right)
