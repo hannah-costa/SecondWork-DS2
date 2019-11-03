@@ -8,6 +8,7 @@ class Node(object):
 class BinaryTree(object):
 	def __init__(self):
 		self.root = None
+		pass
 
 
 	def _compare(self, newData, oldData):
@@ -25,6 +26,7 @@ class BinaryTree(object):
 
 	def insert(self, data):
 		self.root = self._insert(data, self.root)
+		pass
 
 
 	def _insert(self, data, node):
@@ -43,12 +45,13 @@ class BinaryTree(object):
 		return node
 
 	
-	def readFile(self, filename):
+	def insertMultipleElements(self, elements):
 
-		# Reads the file into a binary tree.
+		# Reads the file into a string which is converted to an auxiliar list
+		# for inserting its elements into the binary tree.
 
-		for line in open(filename, "r"):
-			self.insert(int(line)) # Change this line according to the type in the file.
+		for element in elements:
+			self.insert(element)
 
 
 	# TODO. Not necessary, but I want to implement it anyway
@@ -57,6 +60,7 @@ class BinaryTree(object):
 
 	def search(self, data):
 		return self._search(data, self.root)
+		pass
 
 	
 	def _search(self, data, node):
@@ -114,6 +118,7 @@ class BinaryTree(object):
 
 	def printTree(self):
 		self._printTree(self.root)
+		pass
 
 
 	# recursive print

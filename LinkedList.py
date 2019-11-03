@@ -5,12 +5,11 @@ class LinkedList(object):
 
 		self.group = []
 
-	def readFile(self, filename):
+	def insertMultipleElements(self, elements):
 
-		# Reads the file into a list.
+		# Appends elements to the end of the list.
 
-		for line in open(filename, "r"):
-			self.group.append(int(line[:-1])) # Change this line according to the type in the file.
+		self.group += elements
 
 
 	def searchSame(self, group):
