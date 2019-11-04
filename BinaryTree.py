@@ -8,7 +8,6 @@ class Node(object):
 class BinaryTree(object):
 	def __init__(self):
 		self.root = None
-		pass
 
 
 	def _compare(self, newData, oldData):
@@ -26,7 +25,6 @@ class BinaryTree(object):
 
 	def insert(self, data):
 		self.root = self._insert(data, self.root)
-		pass
 
 
 	def _insert(self, data, node):
@@ -60,7 +58,6 @@ class BinaryTree(object):
 
 	def search(self, data):
 		return self._search(data, self.root)
-		pass
 
 	
 	def _search(self, data, node):
@@ -118,7 +115,6 @@ class BinaryTree(object):
 
 	def printTree(self):
 		self._printTree(self.root)
-		pass
 
 
 	# recursive print

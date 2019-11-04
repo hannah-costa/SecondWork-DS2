@@ -10,22 +10,35 @@ def readFile(filename):
 
 	elements = [int(x) for x in string[1:-2].split(", ") ]
 	return elements
+	
 
 if __name__ == '__main__':
+
+	#################
+	#    GROUP A    #
+	#################
+
 	# groupA = LL.LinkedList()
-	# groupA.insertMultipleElements( readFile("fileA.txt") )
-	# print(groupA.group)
+	# groupA.insertMultipleElements(readFile("file1000.txt"))
+
+	#################
+	#    GROUP B    #
+	#################
+
+	# groupB = LL.LinkedList()
+	# groupB.insertMultipleElements(readFile("file5000.txt"))
 
 	# groupB = BT.BinaryTree()
-	# groupB.insertMultipleElements(readFile("fileB.txt"))
-	# groupB.removeSame(groupA.group)
-	# print(groupA.group)
+	# groupB.insertMultipleElements(readFile("file5000.txt"))
 
-	groupB = AVL.AVLTree()
-	groupB.insertMultipleElements(readFile("fileA.txt"))
-	groupB.printTree()
+	# groupB = AVL.AVLTree()
+	# groupB.insertMultipleElements(readFile("file5000.txt"))
 
-	# groupB = HT.HashTable()
-	# groupB.readFile("fileB.txt")
+
+	####################
+	#    OPERATIONS    #
+	####################
+
+	# groupB.searchSame(groupA.group)
+	# groupB.insertDifferent(groupA.group)
 	# groupB.removeSame(groupA.group)
-	# print(groupA.group)

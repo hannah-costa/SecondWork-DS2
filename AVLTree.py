@@ -3,74 +3,69 @@ class Node(object):
 		self.data = data
 		self.left = None
 		self.right = None
-		self.balance = 0 # balance factor of the node
+		self.height = 1
 
-	def setBalance(self, balance):
-		self.balance = balance
 
-		
 class AVLTree(object):
 	def __init__(self):
 		self.root = None
-		pass
 
 
-	def calculateHeight(self, node):
+	def getHeight(self, node):
 
-		# recursively calculates the height of the tree using this formula:
-		# Height = 1 + max(Height(left) + Height(right))
-		# Where Height(left/right) is the height of the left/right subtree.
+		# Getter for the height attribute of the node. 
 
 		if node is None:
-			return -1
+			return 0
 
-		lHeight = self.calculateHeight(node.left)
-		rHeight = self.calculateHeight(node.right)
-
-		return 1 + max(lHeight, rHeight)
+		return node.height
 
 
-	def updateBF(self, node):
+	def getBalance(self, node):
 
-		# updates the balance factor (BF) of every element in the tree using
-		# this formula:
-		# BF = Height(left) - Height(right)
-		if node is not None:
-			lHeight = self.calculateHeight(node.left)
-			rHeight = self.calculateHeight(node.right)
-			node.balance = rHeight - lHeight
+		# Calculates the BF of the node.
 
-			self.updateBF(node.left)
-			self.updateBF(node.right)
+		if node is None:
+			return 0
+
+		return self.getHeight(node.right) - self.getHeight(node.left)
 
 
 	def rotateLeft(self, node):
 
-		# rotates the tree to the left. The node to the right goes to the place
+		# Rotates the tree to the left. The node to the right goes to the place
 		# where the received node was.
 		
 		rNode = node.right
 		node.right = rNode.left
 		rNode.left = node
 
+		# update height of the nodes
+		node.height = 1 + max(self.getHeight(node.left), self.getHeight(node.right))
+		rNode.height = 1 + max(self.getHeight(rNode.left), self.getHeight(rNode.right))
+
 		return rNode
 
 
 	def rotateRight(self, node):
 
-		# rotates the tree to the right. The node to the left goes to the place
+		# Rotates the tree to the right. The node to the left goes to the place
 		# where the received node was.
 
 		lNode = node.left
 		node.left = lNode.right
 		lNode.right = node
 
+		# update height of the nodes
+		node.height = 1 + max(self.getHeight(node.left), self.getHeight(node.right))
+		lNode.height = 1 + max(self.getHeight(lNode.left), self.getHeight(lNode.right))
+
 		return lNode
 
 
 	def rotateLeftRight(self, node):
 
-		# a.k.a. double right rotation
+		# A.k.a. double right rotation
 		# consists of a left rotation then a right rotation.
 
 		node = self.rotateLeft(node.left)
@@ -79,7 +74,7 @@ class AVLTree(object):
 
 	def rotateRightLeft(self, node):
 
-		# a.k.a. double left rotation
+		# A.k.a. double left rotation
 		# consists of a right rotation then a left rotation.
 
 		node = self.rotateRight(node.right)
@@ -91,19 +86,26 @@ class AVLTree(object):
 		# Recursively rebalances the tree with rotations.
 
 		if node is not None:
+			
 			node.left = self.rebalance(node.left)
 			node.right = self.rebalance(node.right)
+			balance = self.getBalance(node)
+			balanceL = self.getBalance(node.left)
+			balanceR = self.getBalance(node.right)
 
-			if node.balance > 1: # if the BF of the node is positive and...
-				if node.right.balance >= 0: # ...right child is positive, rotate left.
+			if balance > 1: # if the BF of the node is positive and...
+				
+				if balanceR >= 0: # ...right child is positive, rotate left.
 					node = self.rotateLeft(node)
-				elif node.right.balance < 0: # ...left child is negative, rotate right, then left.
+
+				elif balanceR < 0: # ...left child is negative, rotate right, then left.
 					node = self.rotateRightLeft(node)
 					
-			elif node.balance < -1: # if the BF of the node is negative and...
-				if node.left.balance >= 0: # ...left child is positive, rotate left, then right.
+			elif balance < -1: # if the BF of the node is negative and...
+				if balanceL >= 0: # ...left child is positive, rotate left, then right.
 					node = self.rotateLeftRight(node)
-				elif node.left.balance < 0: # ...left child is negative, rotate right.
+
+				elif balanceL < 0: # ...left child is negative, rotate right.
 					node = self.rotateRight(node)
 		
 		return node
@@ -136,8 +138,7 @@ class AVLTree(object):
 		# Inserts an element into the AVL tree and then rebalances the tree if needed.
 
 		self.root = self._insert(data, self.root)
-		self.updateBF(self.root)
-		self.rebalance(self.root)
+		self.root = self.rebalance(self.root)
 		
 
 	def _insert(self, data, node):
@@ -145,20 +146,24 @@ class AVLTree(object):
 		# Recursive insertion.
 
 		if node is None:
-			node = Node(data)
+			return Node(data)
 		else:
 			stat = self._compare(data, node.data)
+
 			if stat < 0:
 				node.left = self._insert(data, node.left)
+
 			else:
 				node.right = self._insert(data, node.right)
+
+		# Updating height of the inserted node.
+		node.height = 1 + max(self.getHeight(node.left), self.getHeight(node.right))
 
 		return node
 
 
 	def search(self, data):
 		return self._search(data, self.root)
-		pass
 
 	
 	def _search(self, data, node):
@@ -216,7 +221,6 @@ class AVLTree(object):
 
 	def printTree(self):
 		self._printTree(self.root)
-		pass
 
 
 	def _printTree(self, node):	
