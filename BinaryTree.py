@@ -40,8 +40,7 @@ class BinaryTree(object):
 
 		if node is None:
 			self.comparisons += 1
-			node = Node(data)
-			self.attributions += 1
+			return Node(data)
 		else:
 			self.comparisons += 1
 			stat = self._compare(data, node.data)

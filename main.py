@@ -4,6 +4,7 @@ import BinaryTree as BT
 import AVLTree as AVL
 import RBTree as RB
 import time
+import sys
 
 def readFile(filename):
 	with open(filename, "r") as file:
@@ -12,22 +13,25 @@ def readFile(filename):
 	elements = [int(x) for x in string[1:-1].split(", ") ]
 	return elements
 
+
 if __name__ == '__main__':
+	sys.setrecursionlimit(500000)
 	print("reading files...")
 	groupA = LL.LinkedList()
-	groupA.insertMultipleElements( readFile("file1000.txt") )
+	groupA.insertMultipleElements( readFile("file100000.txt") )
 
 	# groupB = LL.LinkedList()
 	# groupB.insertMultipleElements(readFile("file500000.txt"))
 
-	# groupB = HT.HashTable()
-	# groupB.insertMultipleElements(readFile("file50000.txt"))
+	groupB = HT.HashTable()
+	groupB.insertMultipleElements(readFile("file500000.txt"))
 
-	groupB = BT.BinaryTree()
-	groupB.insertMultipleElements(readFile("file5000.txt"))
+	# groupB = BT.BinaryTree()
+	# groupB.insertMultipleElements(readFile("file500000.txt"))
+	#groupB.printTree()
 
 	# groupB = AVL.AVLTree()
-	# groupB.insertMultipleElements(readFile("file5000.txt"))
+	# groupB.insertMultipleElements(readFile("file500000.txt"))
 
 	start = time.time()
 	print("doing first operation...")

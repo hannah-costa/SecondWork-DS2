@@ -9,11 +9,13 @@ class Node(object):
 class AVLTree(object):
 	def __init__(self):
 		self.root = None
-		pass
+		self.comparisons = 0
+		self.attributions = 0
 
 
 	def getHeight(self, node):
 		if node is None:
+			self.comparisons += 1
 			return 0
 
 		return node.height
@@ -21,6 +23,7 @@ class AVLTree(object):
 
 	def getBalance(self, node):
 		if node is None:
+			self.comparisons += 1
 			return 0
 
 		return self.getHeight(node.right) - self.getHeight(node.left)
@@ -60,12 +63,17 @@ class AVLTree(object):
 		# where the received node was.
 		
 		rNode = node.right
+		self.attributions += 1
 		node.right = rNode.left
+		self.attributions += 1
 		rNode.left = node
+		self.attributions += 1
 
 		# update height of the nodes
 		node.height = 1 + max(self.getHeight(node.left), self.getHeight(node.right))
+		self.attributions += 1
 		rNode.height = 1 + max(self.getHeight(rNode.left), self.getHeight(rNode.right))
+		self.attributions += 1
 
 		return rNode
 
@@ -76,12 +84,17 @@ class AVLTree(object):
 		# where the received node was.
 
 		lNode = node.left
+		self.attributions += 1
 		node.left = lNode.right
+		self.attributions += 1
 		lNode.right = node
+		self.attributions += 1
 
 		# update height of the nodes
 		node.height = 1 + max(self.getHeight(node.left), self.getHeight(node.right))
+		self.attributions += 1
 		lNode.height = 1 + max(self.getHeight(lNode.left), self.getHeight(lNode.right))
+		self.attributions += 1
 
 		return lNode
 
@@ -92,6 +105,7 @@ class AVLTree(object):
 		# consists of a left rotation then a right rotation.
 
 		node = self.rotateLeft(node.left)
+		self.attributions += 1
 		return self.rotateRight(node)
 
 
@@ -101,6 +115,7 @@ class AVLTree(object):
 		# consists of a right rotation then a left rotation.
 
 		node = self.rotateRight(node.right)
+		self.attributions += 1
 		return self.rotateLeft(node)
 
 
@@ -109,23 +124,39 @@ class AVLTree(object):
 		# Recursively rebalances the tree with rotations.
 
 		if node is not None:
+			self.comparisons += 1
 			node.left = self.rebalance(node.left)
+			self.attributions += 1
 			node.right = self.rebalance(node.right)
+			self.attributions += 1
 			balance = self.getBalance(node)
+			self.attributions += 1
 			balanceL = self.getBalance(node.left)
+			self.attributions += 1
 			balanceR = self.getBalance(node.right)
+			self.attributions += 1
 
 			if balance > 1: # if the BF of the node is positive and...
+				self.comparisons += 1
 				if balanceR >= 0: # ...right child is positive, rotate left.
+					self.comparisons += 1
 					node = self.rotateLeft(node)
+					self.attributions += 1
 				elif balanceR < 0: # ...left child is negative, rotate right, then left.
+					self.comparisons += 1
 					node = self.rotateRightLeft(node)
+					self.attributions += 1
 					
 			elif balance < -1: # if the BF of the node is negative and...
+				self.comparisons += 1
 				if balanceL >= 0: # ...left child is positive, rotate left, then right.
+					self.comparisons += 1
 					node = self.rotateLeftRight(node)
+					self.attributions += 1
 				elif balanceL < 0: # ...left child is negative, rotate right.
+					self.comparisons += 1
 					node = self.rotateRight(node)
+					self.attributions += 1
 		
 		return node
 
@@ -136,6 +167,7 @@ class AVLTree(object):
 		# for inserting its elements into the AVL tree.
 
 		for element in elements:
+			self.attributions += 1
 			self.insert(element)
 
 
@@ -157,8 +189,10 @@ class AVLTree(object):
 		# Inserts an element into the AVL tree and then rebalances the tree if needed.
 
 		self.root = self._insert(data, self.root)
+		self.attributions += 1
 		# self.updateBF(self.root)
 		self.root = self.rebalance(self.root)
+		self.attributions += 1
 		
 
 	def _insert(self, data, node):
@@ -166,15 +200,23 @@ class AVLTree(object):
 		# Recursive insertion.
 
 		if node is None:
+			self.comparisons += 1
 			return Node(data)
 		else:
+			self.comparisons += 1
 			stat = self._compare(data, node.data)
+			self.attributions += 1
 			if stat < 0:
+				self.comparisons += 1
 				node.left = self._insert(data, node.left)
+				self.attributions += 1
 			else:
+				self.comparisons += 1
 				node.right = self._insert(data, node.right)
+				self.attributions += 1
 
 		node.height = 1 + max(self.getHeight(node.left), self.getHeight(node.right))
+		self.attributions += 1
 
 		return node
 
@@ -189,12 +231,17 @@ class AVLTree(object):
 		# Returns the data of the node if it has been found, returns None otherwise.
 
 		if node is not None:
+			self.comparisons += 1
 			stat = self._compare(data, node.data)
+			self.attributions += 1
 			if stat == 0:
+				self.comparisons += 1
 				return node.data
 			elif stat < 0:
+				self.comparisons += 1
 				return self._search(data, node.left)
 			else:
+				self.comparisons += 1
 				return self._search(data, node.right)
 
 		return None
@@ -205,9 +252,13 @@ class AVLTree(object):
 		# Searches for elements that are both in the list and in the AVL tree.
 
 		same = []
+		self.attributions += 1
 		for element in group:
+			self.attributions += 1
 			if self.search(element) is not None:
+				self.comparisons += 1
 				same.append(element)
+				self.attributions += 1
 
 		return same
 
@@ -217,11 +268,16 @@ class AVLTree(object):
 		# Inserts the elements that are in the list and not in the AVL tree.
 
 		different = []
+		self.attributions += 1
 		for element in group:
+			self.attributions += 1
 			if self.search(element) is None:
+				self.comparisons += 1
 				different.append(element)
+				self.attributions += 1
 
 		for element in different:
+			self.attributions += 1
 			self.insert(element)
 
 
@@ -231,8 +287,10 @@ class AVLTree(object):
 		# at the same time.
 
 		same = self.searchSame(group)
+		self.attributions += 1
 
 		for element in same:
+			self.attributions += 1
 			group.remove(element)
 
 
@@ -245,6 +303,7 @@ class AVLTree(object):
 		# Recursive print of the tree in pre order.
 
 		if node is not None:
+			self.comparisons += 1
 			print(str(node.data) + ' ' + str(self.getBalance(node)))
 			self._printTree(node.left)
 			self._printTree(node.right)
